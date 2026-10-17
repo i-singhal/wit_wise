@@ -1,0 +1,112 @@
+{
+ "importance": {
+  "Passenger": 0.979,
+  "Survivor": 1.039,
+  "Medic": 1.002,
+  "Rotator": 1.069,
+  "Flex": 0.86,
+  "Wingman": 0.878,
+  "Slayer": 1.097,
+  "Apex": 1.133
+ },
+ "coef": {
+  "Passenger": -0.01064,
+  "Survivor": 0.0195,
+  "Medic": 0.00092,
+  "Rotator": 0.03691,
+  "Flex": -0.12378,
+  "Wingman": -0.08438,
+  "Slayer": 0.05668,
+  "Apex": 0.10479
+ },
+ "weights": {
+  "Passenger": {
+   "kills": 0.111,
+   "damageDealt": 0.111,
+   "DBNOs": 0.111,
+   "assists": 0.111,
+   "revives": 0.111,
+   "heals": 0.111,
+   "boosts": 0.111,
+   "walkDistance": 0.111,
+   "rideDistance": 0.111
+  },
+  "Survivor": {
+   "kills": 0.111,
+   "damageDealt": 0.111,
+   "DBNOs": 0.111,
+   "assists": 0.111,
+   "revives": 0.111,
+   "heals": 0.111,
+   "boosts": 0.111,
+   "walkDistance": 0.111,
+   "rideDistance": 0.111
+  },
+  "Medic": {
+   "kills": 0.097,
+   "damageDealt": 0.084,
+   "DBNOs": 0.081,
+   "assists": 0.045,
+   "revives": 0.472,
+   "heals": 0.042,
+   "boosts": 0.055,
+   "walkDistance": 0.076,
+   "rideDistance": 0.048
+  },
+  "Rotator": {
+   "kills": 0.059,
+   "damageDealt": 0.085,
+   "DBNOs": 0.059,
+   "assists": 0.059,
+   "revives": 0.059,
+   "heals": 0.217,
+   "boosts": 0.178,
+   "walkDistance": 0.103,
+   "rideDistance": 0.18
+  },
+  "Flex": {
+   "kills": 0.111,
+   "damageDealt": 0.111,
+   "DBNOs": 0.111,
+   "assists": 0.111,
+   "revives": 0.111,
+   "heals": 0.111,
+   "boosts": 0.111,
+   "walkDistance": 0.111,
+   "rideDistance": 0.111
+  },
+  "Wingman": {
+   "kills": 0.049,
+   "damageDealt": 0.062,
+   "DBNOs": 0.049,
+   "assists": 0.527,
+   "revives": 0.049,
+   "heals": 0.079,
+   "boosts": 0.069,
+   "walkDistance": 0.067,
+   "rideDistance": 0.049
+  },
+  "Slayer": {
+   "kills": 0.223,
+   "damageDealt": 0.202,
+   "DBNOs": 0.253,
+   "assists": 0.035,
+   "revives": 0.035,
+   "heals": 0.085,
+   "boosts": 0.081,
+   "walkDistance": 0.052,
+   "rideDistance": 0.035
+  },
+  "Apex": {
+   "kills": 0.181,
+   "damageDealt": 0.178,
+   "DBNOs": 0.185,
+   "assists": 0.049,
+   "revives": 0.047,
+   "heals": 0.101,
+   "boosts": 0.117,
+   "walkDistance": 0.081,
+   "rideDistance": 0.061
+  }
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "k": 8,
+ "names": {
+  "0": "Passenger",
+  "1": "Survivor",
+  "2": "Medic",
+  "3": "Rotator",
+  "4": "Flex",
+  "5": "Wingman",
+  "6": "Slayer",
+  "7": "Apex"
+ },
+ "weights": {
+  "Passenger": 0.071,
+  "Survivor": 0.083,
+  "Medic": 0.12,
+  "Rotator": 0.05,
+  "Flex": 0.381,
+  "Wingman": 0.081,
+  "Slayer": 0.161,
+  "Apex": 0.054
+ },
+ "mean_conf": 0.7890761077580446,
+ "hybrid_share": 0.19902401153440913
+}

@@ -52,3 +52,39 @@ Scripts: `prepare_data.py` -> `data/clean.parquet`, `eda.py` -> `eda/*.png`, `ed
 18 charts in `eda/` (composition, target, distributions, correlation, stat-vs-placement, hexbins, duration, kill concentration,
 zero-kill contributors, team stats vs placement, Gini, top-10 vs rest, survivorship, role-space hint, mode comparison,
 team size, cleaning funnel).
+
+## Phase 2 — Role discovery
+Script: `roles.py` -> `roles/*.png`, `roles/gmm.joblib`, `data/roles.parquet` (adds `m0..m7`, `role_name`, `role_conf`, `split`).
+
+| # | Decision | Why / evidence |
+|---|---|---|
+| D2.1 | Matches split 50/50 into **A (fit roles)** and **B (held out for benchmarks, importance, validation)** by `matchId`, seed 42 | Mentor point 4 of the plan: avoid circularity between role discovery and placement-based steps. Role shares are identical in A and B (e.g. Flex 42.0% vs 42.1%) |
+| D2.2 | First attempt: GMM on raw within-match percentile ranks (k=6, ARI 0.999) **rejected** | Clusters were just an engagement ladder (low->high on everything). That is the survivorship factor from E7, not playstyle |
+| D2.3 | **Features = within-match percentile minus teammates' mean percentile** (`d_*`), 9 stats: kills, damage, DBNOs, assists, revives, heals, boosts, walk, ride | The split happens inside a squad, so a role should mean "what this player did *more than their teammates*". Removes shared squad survival; exposes specialisation (E4) |
+| D2.4 | Percentile (average ties) instead of raw/log values | Stats are 48–79% zeros (E8) and lobby scale differs by mode/duration (E9) |
+| D2.5 | `GaussianMixture(full covariance, reg_covar=0.002, n_init=5)` | Full covariance captures correlated stats. A larger `reg_covar=0.01` was needed for the uncentered attempt; 0.002 suits the centred scale. First un-regularised run produced non-monotone BIC (tie-spike components) |
+| D2.6 | **k = 8** | Chosen on stability + interpretability, not BIC alone (BIC/LL keep creeping up). Seed-ARI 0.993 at k=8 (0.64–0.80 at k=5–7, 0.94 at k=9, 0.75 at k=10); held-out LL plateaus at 9. Every k=8 cluster is distinct and nameable. k=9 only splits Wingman into two |
+| D2.7 | Role names set from centroids (see table) | Roles are *labels for data-driven clusters*, so names can be changed without refitting |
+| D2.8 | Soft membership kept (`m0..m7`); 19.9% of players have max membership < 0.6 | These are the hybrids the GMM was chosen for; hard label stored only for charts |
+
+### The 8 roles (share of players)
+| Role | Share | Signature (percentile advantage vs teammates) |
+|---|---|---|
+| Flex | 42% | ≈0 on everything (no standout trait) |
+| Slayer | 15% | +kills, +damage, +DBNOs |
+| Medic | 14% | +0.31 revives |
+| Wingman | 9% | +0.29 assists, fewer kills |
+| Survivor | 7% | well below teammates on kills/damage/DBNOs, level on heals/walk |
+| Passenger | 6% | below teammates on everything |
+| Apex | 4% | above teammates on everything (kills 3.5/match, boosts 3.3) |
+| Rotator | 4% | +heals, +boosts, +ride, fewer revives |
+
+### Findings & caveats
+- **C2.1 Flex is a catch-all, and weak.** Flex players average winPlacePerc 0.41 vs ~0.67 for every other role. The most common squad is (Flex, Flex, Flex): when a whole squad dies early nobody stands out, so team-centring puts them all at ≈0. *Flex mixes "genuinely balanced" with "nothing happened".* Phase 3 must therefore score **absolute performance within role**, not just role membership.
+- **C2.2 Passenger has the highest mean placement (0.70).** Centred roles are relative: a Passenger on a winning squad did less than carries, not nothing. Same reasoning: points come from the benchmark percentile, not from the role label.
+- **C2.3 Squads with more distinct roles place better** (1 role: 0.26, 2: 0.51, 3: 0.65, 4: 0.70). Correlation only: winning squads have more to specialise in. Not claimed as causal; do not use as a feature.
+- **C2.4 Roles are per-match behaviour**, not player identity (no stable player IDs).
+- Raw-unit check (`roles/07`): Medic 1.3 revives/match, Wingman 1.4 assists, Slayer 2.4 kills, Apex 3.5 kills + 400 damage: roles are interpretable in real stats, not only in percentile space.
+
+### Phase 2 deliverables
+9 charts in `roles/`: k-selection (LL/ARI/BIC), centroid heatmap, radars, role sizes + hybrid-ness, role mix by mode/team size, PCA map, raw stats by role, squad compositions vs placement, role co-occurrence.
