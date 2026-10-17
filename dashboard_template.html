@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team WISE · Fair Share by Playstyle</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.35.0/plotly.min.js"></script>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202c;--mute:#5b6878;--line:#e3e7ec;--acc:#2563eb;--accsoft:#e8effd;--good:#17803d;--bad:#c2410c;--shadow:0 1px 2px rgba(16,24,40,.06),0 4px 14px rgba(16,24,40,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e131a;--card:#161d27;--ink:#e8edf3;--mute:#93a1b3;--line:#263140;--acc:#6ea0ff;--accsoft:#1b2a45;--good:#4ade80;--bad:#fb923c;--shadow:none}}
+:root[data-theme=dark]{--bg:#0e131a;--card:#161d27;--ink:#e8edf3;--mute:#93a1b3;--line:#263140;--acc:#6ea0ff;--accsoft:#1b2a45;--good:#4ade80;--bad:#fb923c;--shadow:none}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:-.01em}.brand small{color:var(--mute);font-weight:500;margin-left:8px}
+nav{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+nav button{border:0;background:none;color:var(--mute);padding:7px 12px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+nav button:hover{background:var(--accsoft)}nav button.on{background:var(--accsoft);color:var(--acc)}
+#theme{border:1px solid var(--line);background:none;color:var(--mute);border-radius:8px;padding:6px 10px;cursor:pointer;font:inherit}
+main{max-width:1240px;margin:0 auto;padding:22px 20px 80px}
+section.tab{display:none}section.tab.on{display:block}
+h1{font-size:34px;line-height:1.12;letter-spacing:-.025em;margin:6px 0 10px;max-width:22ch}
+h2{font-size:21px;letter-spacing:-.015em;margin:34px 0 4px}h3{font-size:16px;margin:0 0 6px}
+p.lead{font-size:17px;color:var(--mute);max-width:70ch;margin:0 0 18px}p.note{color:var(--mute);font-size:13.5px;margin:2px 0 12px;max-width:80ch}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.kpi .v{font-size:32px;font-weight:700;letter-spacing:-.02em}.kpi .l{color:var(--mute);font-size:13.5px}.kpi .v small{font-size:15px;color:var(--mute);font-weight:500}
+.good{color:var(--good)}.bad{color:var(--bad)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;counter-reset:s}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 44px;counter-increment:s}
+.step:before{content:counter(s);position:absolute;left:12px;top:12px;width:22px;height:22px;border-radius:50%;background:var(--acc);color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center}
+.step b{display:block}.step span{color:var(--mute);font-size:13px}
+.chart{width:100%;min-height:320px}.chart.tall{min-height:420px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.role{cursor:pointer;border:2px solid transparent;transition:.12s}.role:hover{transform:translateY(-1px)}.role.on{border-color:var(--rc)}
+.role .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--rc);margin-right:7px}
+.role .sh{float:right;color:var(--mute);font-size:13px}.role p{margin:4px 0 0;color:var(--mute);font-size:13px}
+.ctrl{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+.ctrl label{font-size:13px;color:var(--mute);display:flex;flex-direction:column;gap:3px;min-width:180px}
+select,input[type=range]{font:inherit;accent-color:var(--acc)}select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:8px;font:inherit;cursor:pointer;font-weight:600}.btn:hover{background:var(--accsoft)}
+.pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:14px}
+.pl .card{padding:12px 14px}.pl .nm{font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.tag{font-size:11.5px;padding:2px 8px;border-radius:99px;color:#fff;font-weight:600}
+.mem{display:flex;height:8px;border-radius:5px;overflow:hidden;margin:8px 0;background:var(--line)}
+.st{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-size:12px;color:var(--mute);margin-bottom:8px}.st b{display:block;color:var(--ink);font-size:14px}
+.pts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;border-top:1px solid var(--line);padding-top:8px}
+.pts div{font-size:11.5px;color:var(--mute)}.pts b{display:block;font-size:19px;color:var(--ink)}.pts .us b{color:var(--acc)}
+.delta{font-size:12px;font-weight:700}
+.callout{border-left:4px solid var(--acc);background:var(--accsoft);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:14.5px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.gal figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:zoom-in}
+.gal img{width:100%;display:block;background:#fff}.gal figcaption{padding:7px 10px;font-size:12.5px;color:var(--mute)}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}#lb img{max-width:96vw;max-height:94vh;background:#fff;border-radius:8px}
+.log{overflow-x:auto}.log table{border-collapse:collapse;font-size:13px;margin:10px 0 18px;width:100%}.log th,.log td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}.log th{background:var(--accsoft)}
+.log h2{font-size:19px}.log h3{font-size:15px;margin-top:20px}.log code{background:var(--accsoft);padding:1px 5px;border-radius:4px;font-size:12.5px}
+@media(max-width:560px){.g2{grid-template-columns:1fr}h1{font-size:27px}main{padding:16px 14px 60px}.bar{padding:8px 14px}}
+</style></head><body>
+<header><div class="bar"><div class="brand">Team WISE<small>Fair Share by Playstyle</small></div>
+<nav id="nav"></nav><button id="theme" title="Toggle theme">◐</button></div></header>
+<main>
+<section class="tab" id="t-overview">
+  <h1>Same 100 points. Judged by your own playstyle.</h1>
+  <p class="lead">Kills-only scoring ignores half of all players. We discover how each player actually plays, compare them to the best players <i>of that style</i>, and split each squad's 100 points accordingly.</p>
+  <div class="grid g4" id="kpis"></div>
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><b>Clean &amp; profile</b><span>1.6M players in 500k squads, cheaters and merged lobbies removed</span></div>
+    <div class="step"><b>Discover roles</b><span>GMM on how each player differs from their own teammates → 8 styles, soft membership</span></div>
+    <div class="step"><b>Benchmark</b><span>Each role's stat distribution among top-10 teams, on held-out matches</span></div>
+    <div class="step"><b>Score two ways</b><span>60% percentile vs that role's benchmark × role importance, 40% one shared contribution yardstick</span></div>
+    <div class="step"><b>Split 100</b><span>Normalised inside each squad; contrast slider shows the policy trade-off</span></div>
+  </div>
+  <h2>The problem with kills-only</h2>
+  <p class="note">Share of players with zero of each stat, and how strongly each stat tracks final placement. Kills are a weak signal of winning; survival-type behaviour is a strong one.</p>
+  <div class="grid g2"><div class="card"><div id="c-zero" class="chart"></div></div><div class="card"><div id="c-corr" class="chart"></div></div></div>
+  <h2>Who gets paid: kills-only vs fixed pillars vs ours</h2>
+  <p class="note">Average points relative to an equal split (1.0 = equal share), by role, on held-out matches. Kills-only pays Survivors a fraction of their share; ours keeps every style within a reasonable band while still rewarding the Slayers and Apex players who drive results.</p>
+  <div class="card"><div id="c-rel" class="chart tall"></div></div>
+</section>
+
+<section class="tab" id="t-roles">
+  <h1>Eight ways to play</h1>
+  <p class="lead">Roles are discovered from data (not assigned). Each is defined by what the player does <i>more or less than their teammates</i>; click a card to inspect it. Hybrids hold partial membership in several.</p>
+  <div class="grid g4" id="rolecards"></div>
+  <h2 id="rtitle"></h2>
+  <div class="grid g3">
+    <div class="card"><h3>Signature vs teammates</h3><div id="c-radar" class="chart"></div></div>
+    <div class="card"><h3>Typical match (real units)</h3><div id="c-raw" class="chart"></div></div>
+    <div class="card"><h3>How this role is judged</h3><p class="note" id="rimp"></p><div id="c-rubric" class="chart"></div></div>
+  </div>
+  <h2>Are the roles real?</h2>
+  <p class="note">Left: how many roles the data supports. Stability (agreement between two random seeds) peaks at 8 while held-out likelihood flattens at 9. Right: share of players per role and the most common hybrid blends.</p>
+  <div class="grid g2"><div class="card"><div id="c-ksel" class="chart"></div></div><div class="card"><div id="c-hybrid" class="chart"></div></div></div>
+  <h2>External check</h2>
+  <p class="note">Behaviours that were <b>not</b> used to build the roles still line up with them. Wingmen need the most damage per kill (they soften targets); Rotators swim and drive; Slayers and Apex land the longest kills and streaks.</p>
+  <div class="card"><div id="c-ext" class="chart tall"></div></div>
+</section>
+
+<section class="tab" id="t-explorer">
+  <h1>Squad explorer</h1>
+  <p class="lead">Real 4-player squads from held-out matches. Change the policy sliders and watch the 100 points move.</p>
+  <div class="ctrl">
+    <label>Squad type<select id="sqtag"></select></label>
+    <label>Squad<select id="sqsel"></select></label>
+    <button class="btn" id="rnd">Random squad</button>
+    <label>Contrast γ: <b id="gv">3.0</b><input type="range" id="gam" min="1" max="5" step="0.5" value="3"></label>
+    <label>Role-importance strength: <b id="lv">100%</b><input type="range" id="lam" min="0" max="1" step="0.1" value="1"></label>
+    <label>Absolute-contribution weight β: <b id="bv">40%</b><input type="range" id="bet" min="0" max="1" step="0.1" value="0.4"></label>
+  </div>
+  <div class="callout" id="sqinfo"></div>
+  <div class="pl" id="players"></div>
+  <div class="card"><div id="c-sq" class="chart"></div></div>
+  <p class="note">γ widens the gap between strong and weak performers (γ=1 is nearly an equal split). Importance strength 0% ignores how much each role moves team placement. β mixes two lenses: how well you play <i>your</i> style (1−β) and how much you contributed overall by one shared yardstick (β). At β=0 a top-percentile Passenger can outscore a decent Slayer; β anchors that.</p>
+</section>
+
+<section class="tab" id="t-dynamics">
+  <h1>Team dynamics</h1>
+  <p class="lead">How role mixes, cohesion and dependence on one carry relate to how far a squad gets. All associations are measured on held-out matches and are confounded by survival, so read them as patterns, not causes.</p>
+  <div class="grid g4" id="dkpi"></div>
+  <h2>Squad archetypes</h2>
+  <p class="note">K-means on each squad's average role mix. Some mixes finish well above others.</p>
+  <div class="grid g2"><div class="card"><div id="c-arch" class="chart"></div></div><div class="card"><div id="c-cov" class="chart"></div></div></div>
+  <h2>Role synergy</h2>
+  <p class="note">Effect on placement of having two roles together, beyond each role alone (ridge regression, 4-player squads). Red = pairing helps.</p>
+  <div class="card"><div id="c-syn" class="chart tall"></div></div>
+  <h2>Cohesion and carry-dependence</h2>
+  <div class="grid g3"><div class="card"><div id="c-coh" class="chart"></div></div><div class="card"><div id="c-str" class="chart"></div></div><div class="card"><div id="c-top" class="chart"></div></div></div>
+</section>
+
+<section class="tab" id="t-behavior">
+  <h1>Behavioural patterns</h1>
+  <p class="lead">Beyond roles: how aggression, sustain, mobility and support relate to outcomes, and what kinds of players exist on the aggression–outcome map.</p>
+  <h2>Outcome style by role</h2>
+  <p class="note">Aggressive = top 40% of the lobby on kills. Glass cannons fight a lot and still lose early; quiet survivors avoid fights and place in the top half.</p>
+  <div class="grid g2"><div class="card"><div id="c-quad" class="chart"></div></div><div class="card"><h3>Style percentile vs placement</h3><div id="c-style" class="chart"></div></div></div>
+  <h2>Does playstyle depend on perspective?</h2>
+  <p class="note">First- and third-person lobbies behave differently; this is why scoring is relative to the lobby, not an absolute scale.</p>
+  <div class="card"><div id="c-fpp"></div></div>
+</section>
+
+<section class="tab" id="t-evidence">
+  <h1>Evidence</h1><p class="lead">Every chart generated along the way. Click to enlarge.</p>
+  <div class="chips" id="galf" style="margin-bottom:14px"></div><div class="gal" id="gal"></div>
+</section>
+
+<section class="tab" id="t-method">
+  <h1>Method &amp; decision log</h1>
+  <p class="lead">Every design choice, why we made it, and the evidence behind it. Including the ones we reversed.</p>
+  <div class="grid g2"><div class="card"><div id="c-gamma" class="chart"></div></div><div class="card"><div id="c-imp" class="chart"></div></div></div>
+  <div class="card log" id="log" style="margin-top:14px"></div>
+</section>
+</main><div id="lb"><img alt=""></div>
+<script>
+const D=/*__DATA__*/null;
+const RC={Passenger:"#8795a8",Survivor:"#38a1db",Medic:"#3fb06a",Rotator:"#f08c2e",Flex:"#9b87f5",Wingman:"#e35d9e",Slayer:"#e5484d",Apex:"#d4a017"};
+const DESC={Passenger:"Carried, or out early. Below teammates on nearly everything.",Survivor:"Avoids fights, keeps pace on heals and movement.",Medic:"Revives the squad. The team's safety net.",Rotator:"Drives, heals and boosts. Keeps the squad mobile.",Flex:"No standout trait. Fills whatever gap exists.",Wingman:"Assists and softens targets so others finish.",Slayer:"Primary killer: kills, damage, knockdowns.",Apex:"Outperforms teammates at nearly everything."};
+const O=D.meta.order,F=D.meta.feats;
+const FN={kills:"Kills",damageDealt:"Damage",DBNOs:"Knocks",assists:"Assists",revives:"Revives",heals:"Heals",boosts:"Boosts",walkDistance:"Walk",rideDistance:"Ride"};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const pct=x=>(100*x).toFixed(0)+"%";
+function lay(o={}){return Object.assign({paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",font:{color:css("--ink"),size:12.5},margin:{l:50,r:14,t:34,b:46},legend:{orientation:"h",y:-.2},xaxis:{gridcolor:css("--line"),zerolinecolor:css("--line")},yaxis:{gridcolor:css("--line"),zerolinecolor:css("--line")}},o)}
+const CFG={displayModeBar:false,responsive:true};
+const drawn={};
+function plot(id,data,l){drawn[id]=[data,l];Plotly.react(id,data,lay(l),CFG)}
+function redrawAll(){for(const id in drawn)Plotly.react(id,drawn[id][0],lay(drawn[id][1]),CFG)}
+
+// ---------- tabs
+const TABS=[["overview","Overview"],["roles","Roles"],["explorer","Squad explorer"],["dynamics","Team dynamics"],["behavior","Behaviour"],["evidence","Evidence"],["method","Method & log"]];
+const built={};
+function show(t){if(!TABS.some(x=>x[0]===t))t="overview";$$("section.tab").forEach(s=>s.classList.toggle("on",s.id==="t-"+t));$$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));history.replaceState(null,"","#"+t);window.scrollTo(0,0);if(!built[t]){built[t]=1;B[t]()}setTimeout(()=>window.dispatchEvent(new Event("resize")),30)}
+$("#nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
+$("#nav").onclick=e=>{if(e.target.dataset.t)show(e.target.dataset.t)};
+$("#theme").onclick=()=>{const r=document.documentElement,dark=getComputedStyle(r).getPropertyValue("--bg").trim()==="#0e131a";r.dataset.theme=dark?"light":"dark";setTimeout(redrawAll,30)};
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>setTimeout(redrawAll,30));
+
+const B={};
+// ---------- overview
+B.overview=()=>{
+  const h=D.headline,e=D.eda,z=h.zero_kill_pts_gt_10_share;
+  const k=[[pct(e.players_zero_kills_share),"of players have zero kills",""],
+           [`${pct(z.kills_only)} → ${pct(z.ours)}`,"of zero-kill players earning >10 of 100 points","good"],
+           [pct(D.dyn.rank1_differs_from_top_killer),"of squads where the top earner is not the top killer",""],
+           [`${h.zero_kill_mean_pts.kills_only.toFixed(1)} → ${h.zero_kill_mean_pts.ours.toFixed(1)}`,"mean points for zero-kill players (kills-only → ours)","good"],
+           [D.meta.players.toLocaleString(),`players · ${D.meta.teams.toLocaleString()} squads · ${D.meta.matches.toLocaleString()} matches`,""]];
+  $("#kpis").innerHTML=k.map(x=>`<div class="card kpi"><div class="v ${x[2]}">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+  const zs=Object.entries(e.zero_share).sort((a,b)=>a[1]-b[1]);
+  plot("c-zero",[{type:"bar",orientation:"h",x:zs.map(x=>x[1]),y:zs.map(x=>x[0]),marker:{color:css("--acc")},hovertemplate:"%{y}: %{x:.0%}<extra></extra>"}],{title:{text:"Players with zero of each stat",font:{size:14}},xaxis:{tickformat:".0%",gridcolor:css("--line")},margin:{l:110,r:14,t:34,b:30}});
+  const pc=Object.entries(e.placement_corr).sort((a,b)=>a[1]-b[1]);
+  plot("c-corr",[{type:"bar",orientation:"h",x:pc.map(x=>x[1]),y:pc.map(x=>x[0]),marker:{color:pc.map(x=>x[0]==="kills"?css("--bad"):css("--acc"))},hovertemplate:"%{y}: %{x:.2f}<extra></extra>"}],{title:{text:"Correlation with final placement (kills in orange)",font:{size:14}},margin:{l:110,r:14,t:34,b:30}});
+  const r=D.rel_points;
+  plot("c-rel",[{type:"bar",name:"Kills-only",x:O,y:r.kills,marker:{color:"#e5484d"}},{type:"bar",name:"Fixed pillars",x:O,y:r.fixed,marker:{color:"#8795a8"}},{type:"bar",name:"Ours",x:O,y:r.ours,marker:{color:"#2563eb"}}],
+    {barmode:"group",yaxis:{title:"points ÷ equal share",gridcolor:css("--line")},shapes:[{type:"line",xref:"paper",x0:0,x1:1,y0:1,y1:1,line:{color:css("--mute"),dash:"dot"}}]});
+};
+// ---------- roles
+let selRole="Slayer";
+B.roles=()=>{
+  $("#rolecards").innerHTML=D.roles.map(r=>`<div class="card role" data-r="${r.name}" style="--rc:${RC[r.name]}"><b><span class="dot"></span>${r.name}</b><span class="sh">${pct(r.share)}</span><p>${DESC[r.name]}</p></div>`).join("");
+  $("#rolecards").onclick=e=>{const c=e.target.closest(".role");if(c){selRole=c.dataset.r;drawRole()}};
+  drawRole();
+  const k=D.ksel;
+  plot("c-ksel",[{x:k.k,y:k.ari,name:"Seed stability (ARI)",mode:"lines+markers",line:{color:"#3fb06a"}},{x:k.k,y:k.ll_holdout.map(v=>(v-5.4)/(5.74-5.4)),name:"Held-out likelihood (scaled)",mode:"lines+markers",line:{color:"#2563eb"}}],
+    {title:{text:"Choosing k (red = 8)",font:{size:14}},xaxis:{title:"number of roles",gridcolor:css("--line")},shapes:[{type:"line",x0:8,x1:8,yref:"paper",y0:0,y1:1,line:{color:"#e5484d",dash:"dash"}}]});
+  const hp=Object.entries(D.hybrid_pairs).reverse();
+  plot("c-hybrid",[{type:"bar",orientation:"h",x:hp.map(x=>x[1]),y:hp.map(x=>x[0]),marker:{color:"#9b87f5"},hovertemplate:"%{y}: %{x:.1%}<extra></extra>"}],{title:{text:`Hybrids (${pct(D.dyn.hybrid_share)} of players): most common blends`,font:{size:14}},xaxis:{tickformat:".0%",gridcolor:css("--line")},margin:{l:150,r:14,t:34,b:30}});
+  const keys=Object.keys(D.roles[0].ext),Z=keys.map(k=>{const v=D.roles.map(r=>r.ext[k]),m=v.reduce((a,b)=>a+b)/v.length,s=Math.sqrt(v.reduce((a,b)=>a+(b-m)**2,0)/v.length)||1;return v.map(x=>(x-m)/s)});
+  const nice={hs_rate:"headshot rate",longestKill:"longest kill (m)",weaponsAcquired:"weapons picked up",dmg_per_kill:"damage per kill",killStreaks:"kill streaks",swimDistance:"swim distance",vehicleDestroys:"vehicles destroyed",roadKills:"road kills",teamKills:"team kills"};
+  plot("c-ext",[{type:"heatmap",z:Z,x:O,y:keys.map(k=>nice[k]||k),colorscale:"RdBu",reversescale:true,zmid:0,showscale:false,text:keys.map(k=>D.roles.map(r=>r.ext[k].toFixed(2))),texttemplate:"%{text}",hovertemplate:"%{y} · %{x}: %{text}<extra></extra>"}],{margin:{l:130,r:14,t:10,b:60}});
+};
+function drawRole(){
+  $$(".role").forEach(c=>c.classList.toggle("on",c.dataset.r===selRole));
+  const r=D.roles.find(x=>x.name===selRole),col=RC[selRole],lab=F.map(f=>FN[f]);
+  $("#rtitle").textContent=`${selRole} · ${pct(r.share)} of players`;
+  const v=r.centroid;
+  plot("c-radar",[{type:"scatterpolar",r:[...v,v[0]],theta:[...lab,lab[0]],fill:"toself",line:{color:col},fillcolor:col+"44",hovertemplate:"%{theta}: %{r:+.2f}<extra></extra>"}],{polar:{radialaxis:{range:[-.3,.35],gridcolor:css("--line")},angularaxis:{gridcolor:css("--line")},bgcolor:"rgba(0,0,0,0)"},margin:{l:50,r:50,t:20,b:20},showlegend:false});
+  const rk=["kills","damageDealt","assists","revives","heals","boosts","walkDistance","rideDistance"],rn={kills:"kills",damageDealt:"damage",assists:"assists",revives:"revives",heals:"heals",boosts:"boosts",walkDistance:"walk (m)",rideDistance:"ride (m)"};
+  const mx=rk.map(k=>Math.max(...D.roles.map(q=>q.raw[k])));
+  plot("c-raw",[{type:"bar",orientation:"h",x:rk.map((k,i)=>r.raw[k]/mx[i]),y:rk.map(k=>rn[k]),marker:{color:col},text:rk.map(k=>r.raw[k]>=100?Math.round(r.raw[k]):r.raw[k].toFixed(1)),textposition:"outside",hovertemplate:"%{y}: %{text}<extra></extra>"}],{xaxis:{range:[0,1.25],showticklabels:false,gridcolor:css("--line")},margin:{l:70,r:20,t:10,b:20},title:{text:"bar = share of the highest role's value",font:{size:11}}});
+  const w=F.map(f=>r.rubric[f]);
+  $("#rimp").innerHTML=`Judged against ${selRole}s on top-10 squads. Importance multiplier <b>${D.importance[selRole].toFixed(2)}×</b> (learned from placement, capped at ±15%).`;
+  plot("c-rubric",[{type:"bar",orientation:"h",x:w,y:lab,marker:{color:col},hovertemplate:"%{y}: %{x:.0%}<extra></extra>"}],{xaxis:{tickformat:".0%",gridcolor:css("--line")},margin:{l:70,r:20,t:10,b:30},yaxis:{autorange:"reversed"}});
+}
+// ---------- explorer
+let cur=null;
+function ptsFor(sq,gam,lam,bet){const raw=sq.players.map(p=>Math.pow((1-bet)*p.m.reduce((a,m,i)=>a+m*p.s[i]*(1+lam*(D.importance[O[i]]-1)),0)+bet*p.a,gam));const s=raw.reduce((a,b)=>a+b,0);return raw.map(x=>100*x/s)}
+B.explorer=()=>{
+  const tags=[...new Set(D.squads.map(s=>s.tag))];
+  $("#sqtag").innerHTML=tags.map(t=>`<option>${t}</option>`).join("");
+  const fill=()=>{const t=$("#sqtag").value;$("#sqsel").innerHTML=D.squads.map((s,i)=>[s,i]).filter(x=>x[0].tag===t).map(x=>`<option value="${x[1]}">Squad ${x[0].id} · ${x[0].mode} · finished ${pct(x[0].place)}</option>`).join("");pick()};
+  const pick=()=>{cur=D.squads[+$("#sqsel").value];draw()};
+  $("#sqtag").onchange=fill;$("#sqsel").onchange=pick;
+  $("#rnd").onclick=()=>{const i=Math.floor(Math.random()*D.squads.length);$("#sqtag").value=D.squads[i].tag;fill();$("#sqsel").value=i;pick()};
+  $("#gam").oninput=()=>{$("#gv").textContent=(+$("#gam").value).toFixed(1);draw()};
+  $("#lam").oninput=()=>{$("#lv").textContent=Math.round($("#lam").value*100)+"%";draw()};
+  $("#bet").oninput=()=>{$("#bv").textContent=Math.round($("#bet").value*100)+"%";draw()};
+  fill();
+};
+function draw(){
+  if(!cur)return;const g=+$("#gam").value,l=+$("#lam").value,b=+$("#bet").value,pts=ptsFor(cur,g,l,b);
+  const names=cur.players.map((p,i)=>`${p.role}<br>#${i+1}`);
+  $("#players").innerHTML=cur.players.map((p,i)=>{
+    const top=p.m.map((m,j)=>[m,j]).sort((a,b)=>b[0]-a[0]),d=pts[i]-p.pk;
+    const bar=top.filter(x=>x[0]>.04).map(x=>`<span style="width:${x[0]*100}%;background:${RC[O[x[1]]]}" title="${O[x[1]]} ${pct(x[0])}"></span>`).join("");
+    const mix=top.filter(x=>x[0]>.1).slice(0,3).map(x=>`${O[x[1]]} ${pct(x[0])}`).join(" · ");
+    return `<div class="card"><div class="nm"><span>Player ${i+1}</span><span class="tag" style="background:${RC[p.role]}">${p.role}</span></div>
+      <div class="mem">${bar}</div><div style="font-size:12px;color:var(--mute);margin-bottom:8px">${mix}</div>
+      <div class="st"><div><b>${p.stats.kills}</b>kills</div><div><b>${Math.round(p.stats.damageDealt)}</b>dmg</div><div><b>${p.stats.revives}</b>revives</div><div><b>${p.stats.assists}</b>assists</div><div><b>${p.stats.heals}</b>heals</div></div>
+      <div class="pts"><div>kills-only<b>${p.pk.toFixed(0)}</b></div><div>fixed<b>${p.pf.toFixed(0)}</b></div><div class="us">ours<b>${pts[i].toFixed(0)}</b><span class="delta ${d>=0?"good":"bad"}">${d>=0?"+":""}${d.toFixed(0)} vs kills</span></div></div></div>`}).join("");
+  const gain=cur.players.map((p,i)=>[pts[i]-p.pk,i]).sort((a,b)=>b[0]-a[0]);
+  $("#sqinfo").innerHTML=`<b>${cur.tag}.</b> Squad finished at the ${pct(cur.place)} mark of its lobby. Biggest winner vs kills-only: <b>Player ${gain[0][1]+1} (${cur.players[gain[0][1]].role})</b> ${gain[0][0]>=0?"+":""}${gain[0][0].toFixed(0)} pts; biggest drop: Player ${gain[3][1]+1} (${cur.players[gain[3][1]].role}) ${gain[3][0].toFixed(0)} pts.`;
+  plot("c-sq",[{type:"bar",name:"Kills-only",x:names,y:cur.players.map(p=>p.pk),marker:{color:"#e5484d"}},{type:"bar",name:"Fixed pillars",x:names,y:cur.players.map(p=>p.pf),marker:{color:"#8795a8"}},{type:"bar",name:"Ours",x:names,y:pts,marker:{color:"#2563eb"}}],{barmode:"group",yaxis:{title:"points of 100",gridcolor:css("--line")}});
+}
+// ---------- dynamics
+B.dynamics=()=>{
+  const d=D.dyn;
+  $("#dkpi").innerHTML=[[d.cohesion_corr_place.toFixed(2),"correlation: squad cohesion ↔ placement"],[d.topshare_corr_place.toFixed(2),"correlation: top earner's share ↔ placement"],[pct(d.rank1_differs_from_top_killer),"squads whose #1 earner is not the top killer"],[pct(d.hybrid_share),"players with hybrid role membership"]].map(x=>`<div class="card kpi"><div class="v">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+  const a=Object.entries(d.team_archetypes).sort((x,y)=>x[1].place-y[1].place);
+  plot("c-arch",[{type:"bar",orientation:"h",name:"Mean placement",x:a.map(x=>x[1].place),y:a.map(x=>x[0]),marker:{color:"#2f855a"},text:a.map(x=>`top-10: ${pct(x[1].top10)} · n=${x[1].n.toLocaleString()}`),hovertemplate:"%{y}: %{x:.2f}<br>%{text}<extra></extra>"}],{title:{text:"Mean placement by squad archetype",font:{size:14}},margin:{l:140,r:14,t:34,b:30}});
+  const c=Object.entries(d.coverage_lift).sort((x,y)=>x[1]-y[1]);
+  plot("c-cov",[{type:"bar",orientation:"h",x:c.map(x=>x[1]),y:c.map(x=>x[0]),marker:{color:c.map(x=>RC[x[0]])},hovertemplate:"%{y}: %{x:+.2f}<extra></extra>"}],{title:{text:"Placement lift when a squad has ≥1 of the role",font:{size:14}},margin:{l:90,r:14,t:34,b:30}});
+  const Z=O.map(r=>O.map(q=>d.pair_synergy[q][r]));
+  plot("c-syn",[{type:"heatmap",z:Z,x:O,y:O,colorscale:"RdBu",reversescale:true,zmid:0,text:Z.map(r=>r.map(v=>v.toFixed(3))),texttemplate:"%{text}",hovertemplate:"%{y} + %{x}: %{z:+.3f}<extra></extra>"}],{margin:{l:90,r:14,t:10,b:70}});
+  const cv=D.curves;
+  const L=(id,k,xt,t)=>plot(id,[{x:cv[k].x,y:cv[k].y,mode:"lines+markers",line:{color:"#2563eb"}}],{title:{text:t,font:{size:14}},xaxis:{title:xt,gridcolor:css("--line")},yaxis:{title:"mean placement",gridcolor:css("--line")}});
+  L("c-coh","cohesion","cohesion (1 = same distance)","Moving together");L("c-str","straggler","min ÷ max walk distance","Straggler effect");L("c-top","topshare","top earner's share of 100","Dependence on one carry");
+};
+// ---------- behaviour
+B.behavior=()=>{
+  const q=D.quad_by_role,cols={"Winning fragger":"#3fb06a","Glass cannon":"#e5484d","Quiet survivor":"#38a1db","Early ghost":"#8795a8"};
+  plot("c-quad",Object.keys(q).map(k=>({type:"bar",name:k,x:O,y:q[k],marker:{color:cols[k]},hovertemplate:"%{x} · "+k+": %{y:.0%}<extra></extra>"})),{barmode:"stack",yaxis:{tickformat:".0%",gridcolor:css("--line")},title:{text:"Outcome style by role",font:{size:14}}});
+  const nm={aggr:"Aggression",sustain:"Sustain (heals, boosts)",mobil:"Mobility",suppt:"Support (assists, revives)"},x=[...Array(10).keys()].map(i=>(i+.5)/10),tr=[];
+  const dash={FPP:"solid",TPP:"dot"},cc={aggr:"#e5484d",sustain:"#3fb06a",mobil:"#f08c2e",suppt:"#e35d9e"};
+  for(const k in nm)for(const m of ["FPP","TPP"])tr.push({x,y:D.style_curves[k][m],name:`${nm[k]} · ${m}`,mode:"lines",line:{color:cc[k],dash:dash[m],width:2.5}});
+  plot("c-style",tr,{xaxis:{title:"percentile in lobby",tickformat:".0%",gridcolor:css("--line")},yaxis:{title:"mean placement",gridcolor:css("--line")},legend:{orientation:"h",y:-.35,font:{size:11}}});
+  const g=D.gallery.find(x=>x.name==="08_role_by_perspective");$("#c-fpp").innerHTML=g?`<img src="${g.src}" style="width:100%;border-radius:8px;background:#fff" alt="role stats, first vs third person">`:"";
+};
+// ---------- evidence
+B.evidence=()=>{
+  const gs=["All",...new Set(D.gallery.map(g=>g.group))];let cur="All";
+  const render=()=>{$("#galf").innerHTML=gs.map(g=>`<button class="btn" data-g="${g}" style="${g===cur?"background:var(--accsoft);color:var(--acc)":""}">${g}</button>`).join("");
+    $("#gal").innerHTML=D.gallery.filter(g=>cur==="All"||g.group===cur).map(g=>`<figure><img loading="lazy" src="${g.src}" alt=""><figcaption>${g.group} · ${g.name.replace(/^\d+_/,"").replace(/_/g," ")}</figcaption></figure>`).join("")};
+  $("#galf").onclick=e=>{if(e.target.dataset.g){cur=e.target.dataset.g;render()}};
+  $("#gal").onclick=e=>{const i=e.target.closest("figure img");if(i){$("#lb img").src=i.src;$("#lb").style.display="flex"}};
+  $("#lb").onclick=()=>$("#lb").style.display="none";render();
+};
+// ---------- method
+B.method=()=>{
+  $("#log").innerHTML=D.decisions_html;
+  const g=D.gamma;
+  plot("c-gamma",[{x:g.gamma,y:g.top_share,name:"Top earner's share (4-squad)",mode:"lines+markers",line:{color:"#2563eb"}},{x:g.gamma,y:g.zero_kill_mean,name:"Zero-kill players' mean pts",mode:"lines+markers",line:{color:"#3fb06a"}},{x:g.gamma,y:g.passenger_mean,name:"Passenger mean pts",mode:"lines+markers",line:{color:RC.Passenger}},{x:g.gamma,y:g.apex_mean,name:"Apex mean pts",mode:"lines+markers",line:{color:RC.Apex}}],
+    {title:{text:"Contrast γ is a policy knob (default 3)",font:{size:14}},xaxis:{title:"γ",gridcolor:css("--line")},yaxis:{title:"points",gridcolor:css("--line")},legend:{orientation:"h",y:-.3,font:{size:11}},shapes:[{type:"line",x0:3,x1:3,yref:"paper",y0:0,y1:1,line:{color:"#e5484d",dash:"dash"}}]});
+  plot("c-imp",[{type:"bar",x:O,y:O.map(r=>D.importance[r]),marker:{color:O.map(r=>RC[r])},hovertemplate:"%{x}: %{y:.2f}×<extra></extra>"}],{title:{text:"Role importance multiplier (capped ±15%)",font:{size:14}},yaxis:{range:[.8,1.2],gridcolor:css("--line")},shapes:[{type:"line",xref:"paper",x0:0,x1:1,y0:1,y1:1,line:{color:css("--mute"),dash:"dot"}}]});
+};
+show(location.hash.slice(1)||"overview");
+addEventListener("hashchange",()=>show(location.hash.slice(1)));
+</script></body></html>

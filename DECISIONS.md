@@ -88,3 +88,42 @@ Script: `roles.py` -> `roles/*.png`, `roles/gmm.joblib`, `data/roles.parquet` (a
 
 ### Phase 2 deliverables
 9 charts in `roles/`: k-selection (LL/ARI/BIC), centroid heatmap, radars, role sizes + hybrid-ness, role mix by mode/team size, PCA map, raw stats by role, squad compositions vs placement, role co-occurrence.
+
+## Phase 3 — Benchmarks, scoring, 100-point split
+Script: `score.py` -> `score/*.png`, `score/params.json`, `score/headline.json`, `data/scored.parquet`.
+
+| # | Decision | Why / evidence |
+|---|---|---|
+| D3.1 | Scoring uses **absolute** within-match percentiles (`q_*`), unlike role discovery which used teammate-centred ones | Roles say *how* someone plays; the score must say *how well*, otherwise a Passenger on a winning squad looks "bad" (C2.2) and a Flex on a dead squad looks "average" (C2.1) |
+| D3.2 | Benchmark per role = distribution of each stat among players of that role on **top-10 teams in split B** | Mentor plan step 2. B is held out from role fitting (D2.1). Benchmarks have 17k–85k players per role |
+| D3.3 | Within-role score = Σ_f rubric_weight(role,f) × ECDF_role,f(player stat). **Mid-rank ECDF** | First version used right-sided ECDF; zero-ties inflated everyone (99.7% of zero-kill players got >10 pts). Mid-rank fixes ties |
+| D3.4 | Rubric weight(role,f) ∝ max(centroid_f, 0) + 0.03, normalised | Stats that define a role count most; floor keeps every stat in play so Passenger/Survivor (negative centroids) are still judged on something |
+| D3.5 | Player performance = Σ_role membership × within-role score (soft membership) | Hybrids blend rubrics instead of being forced into one (D2.8) |
+| D3.6 | **Role importance** = ridge of team placement on soft role counts (split B, 4-player squads, controlling lobby size), z-scored, mapped to `1 + 0.15·tanh(z)` → range [0.86, 1.13] | Mentor plan step 4 plus the risk we logged: raw coefficients are confounded (Apex/Slayer co-occur with winning; Flex with early death). Capping at ±15% keeps a medic from being outscored by an average slayer by construction |
+| D3.7 | **Contrast exponent γ = 3** applied before normalising to 100 (exposed as a dashboard slider) | At γ=1 the top earner of a 4-squad got 32 pts (≈ equal split, uninformative). γ=3 → 46 pts, between kills-only (59) and fixed pillars (43). `score/07_gamma_sensitivity.png` |
+| D3.8 | Points normalised within squad to sum to 100; squad size 2–4 | Same guarantee as the Math-branch engine |
+| D3.9 | Baselines: (a) kills-only; (b) Math-branch fixed pillars (45/35/20), with total distance as the survival proxy because no `timeSurvived` exists (D1.6) | Gives two reference allocations to compare against |
+
+| D3.10 | **Two-lens score**: `raw = ((1−β)·style_score + β·absolute_score)^γ`, β = 0.4. The absolute lens is the Math-branch pillar formula (45% combat / 35% support / 20% tactical) applied to within-lobby percentiles | **Flaw found in the dashboard squad explorer**: a Passenger with 0 kills / 30 dmg / 1 revive got 69 pts while two Apex players with 3–4 kills and 300+ dmg got 13 each. Pure within-role percentiles let "best at a low-impact style" beat "average at a high-impact style". β sweep on held-out squads (γ=3): β=0 Passenger/Survivor ≈0.84/0.81× equal share, Apex 1.40×; β=0.4 → 0.62/0.59× and 1.58×; zero-kill players still average ~19 pts in 4-squads with 79% above 10. β=0.4 keeps style-relative fairness (60%) but anchors to real contribution. **β is a policy knob** |
+
+### Results (split B)
+- Zero-kill players (all squad sizes): mean points kills-only **12.8**, fixed pillars 24.2, ours **24.1**; share with >10 pts: 39% → **85%**.
+- Top earner in a 4-player squad: kills-only 59.5, fixed 42.7, ours **43.9** (after D3.10).
+- Importance multipliers: Apex 1.13, Slayer 1.10, Rotator 1.07, Survivor 1.04, Medic 1.00, Passenger 0.98, Wingman 0.88, Flex 0.86. Importance moves points by ~1.7 pts on average after D3.10 (3.1 before) (so it matters, but cannot dominate).
+- **Caveat C3.1** Wingman and Flex multipliers are below 1 largely because those roles are over-represented in squads that die early; they are *not* evidence that assists are worthless. This is the main limit of learned importance on observational data, and the reason for the cap.
+- **Caveat C3.2** γ is a policy knob, not a fitted parameter. Report results at γ ∈ {2,3,4}.
+
+## Phase 4 — Team dynamics & behavioural patterns
+Script: `dynamics.py` -> `dynamics/*.png`, `behavior/*.png`, `dynamics/summary.json`.
+
+| # | Finding | Evidence |
+|---|---|---|
+| T1 | Six squad archetypes by role mix (k-means on soft role shares): Flex+Rotator squads place 0.28 and reach top-10 only 10% of the time; Passenger+Apex 0.75 / 73% top-10 | `dynamics/01` |
+| T2 | Strongest synergies: Survivor+Flex (+0.116), Slayer+Apex (+0.111). Weakest: Flex+Wingman (−0.093), Flex+Medic (−0.054), Wingman+Slayer (−0.054) | `dynamics/02`. Ridge, confounded by survival; treat as associations |
+| T3 | **Cohesion matters**: squads that move together place better (r = +0.39). Carry-dependence is mildly negative (top-earner share r = −0.10, point-Gini r = −0.08) | `dynamics/04`, `05` |
+| T4 | Our #1 earner is **not** the top killer in 48% of 4-player squads | `dynamics/06` |
+| T5 | Role coverage lift: Apex +0.22, Medic +0.20, Passenger +0.20, Survivor +0.16; Flex −0.28 | `dynamics/03` (raw, survival-confounded) |
+| B1 | **External validation of roles**: behaviours not used for clustering line up with role labels. Wingman damage/kill = 162 vs 117–133 elsewhere (softens targets for teammates); Rotator swims 10.4 and has most teamKills/vehicle destroys among non-fraggers; Slayer/Apex have the longest kills (63/81 m) and streaks | `behavior/01` |
+| B2 | Outcome quadrants: Winning fragger 31%, Early ghost 30%, Quiet survivor 27%, Glass cannon 12% | `behavior/02` |
+| B3 | Hybrids (20% of players) mostly sit between Flex and a specialist role: Flex+Slayer 24%, Flex+Survivor 13%, Slayer+Wingman 8%, Slayer+Survivor 6%, Apex+Slayer 5% | `behavior/05` |
+| B4 | **No kills-vs-support trade-off inside squads**: the teammate with more kills also tends to have slightly more revives (+0.16) and more distance; kills vs assists ≈ 0. Specialisation is about *who does more*, not *who gives up what*. (An earlier draft of this log claimed a negative trade-off; the data say otherwise.) | `behavior/04` |

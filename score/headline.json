@@ -2,56 +2,56 @@
  "zero_kill_mean_pts": {
   "kills_only": 12.759271797903892,
   "fixed": 24.23566572049972,
-  "ours": 28.796129093471478
+  "ours": 24.080182983771184
  },
  "zero_kill_pts_gt_10_share": {
   "kills_only": 0.39109630844641957,
-  "ours": 0.996564499670993
+  "ours": 0.8500348079839025
  },
  "top_share_mean_4p": {
-  "ours": 32.05953827404733,
+  "ours": 43.91462755974051,
   "kills_only": 59.48933574969821,
   "fixed": 42.673618220344274
  },
- "importance_effect_mean_abs": 1.1438778762262296,
+ "importance_effect_mean_abs": 1.7172455865067264,
  "points_by_role": {
   "Passenger": {
-   "pts": 27.68,
+   "pts": 18.82,
    "pts_kills": 11.15,
    "pts_fixed": 14.4
   },
   "Survivor": {
-   "pts": 28.16,
+   "pts": 17.86,
    "pts_kills": 6.26,
    "pts_fixed": 14.09
   },
   "Medic": {
-   "pts": 30.92,
+   "pts": 36.62,
    "pts_kills": 35.71,
    "pts_fixed": 41.59
   },
   "Rotator": {
-   "pts": 32.51,
+   "pts": 33.33,
    "pts_kills": 25.65,
    "pts_fixed": 27.87
   },
   "Flex": {
-   "pts": 30.75,
+   "pts": 28.5,
    "pts_kills": 26.66,
    "pts_fixed": 28.34
   },
   "Wingman": {
-   "pts": 28.3,
+   "pts": 28.01,
    "pts_kills": 17.62,
    "pts_fixed": 32.65
   },
   "Slayer": {
-   "pts": 33.74,
+   "pts": 39.72,
    "pts_kills": 56.99,
    "pts_fixed": 37.15
   },
   "Apex": {
-   "pts": 33.75,
+   "pts": 45.73,
    "pts_kills": 63.02,
    "pts_fixed": 47.82
   }

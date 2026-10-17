@@ -1,0 +1,245 @@
+{
+ "team_archetypes": {
+  "Flex + Rotator": {
+   "n": 21654,
+   "place": 0.276,
+   "top10": 0.096,
+   "kills": 1.174,
+   "revives": 0.05,
+   "topshare": 44.144
+  },
+  "Wingman + Slayer": {
+   "n": 13696,
+   "place": 0.658,
+   "top10": 0.578,
+   "kills": 5.644,
+   "revives": 1.333,
+   "topshare": 43.648
+  },
+  "Medic + Slayer": {
+   "n": 24090,
+   "place": 0.721,
+   "top10": 0.673,
+   "kills": 6.306,
+   "revives": 2.167,
+   "topshare": 43.38
+  },
+  "Flex + Wingman": {
+   "n": 14764,
+   "place": 0.482,
+   "top10": 0.32,
+   "kills": 3.216,
+   "revives": 0.274,
+   "topshare": 44.376
+  },
+  "Passenger + Apex": {
+   "n": 16178,
+   "place": 0.749,
+   "top10": 0.728,
+   "kills": 6.41,
+   "revives": 1.465,
+   "topshare": 43.579
+  },
+  "Medic + Flex": {
+   "n": 12365,
+   "place": 0.523,
+   "top10": 0.373,
+   "kills": 3.317,
+   "revives": 1.359,
+   "topshare": 44.737
+  }
+ },
+ "pair_synergy": {
+  "Passenger": {
+   "Passenger": -0.0288,
+   "Survivor": -0.0349,
+   "Medic": 0.0075,
+   "Rotator": -0.0364,
+   "Flex": 0.0329,
+   "Wingman": 0.0247,
+   "Slayer": -0.0199,
+   "Apex": 0.0094
+  },
+  "Survivor": {
+   "Passenger": -0.0349,
+   "Survivor": -0.0501,
+   "Medic": -0.0332,
+   "Rotator": 0.0317,
+   "Flex": 0.1165,
+   "Wingman": -0.0053,
+   "Slayer": -0.0423,
+   "Apex": 0.0421
+  },
+  "Medic": {
+   "Passenger": 0.0075,
+   "Survivor": -0.0332,
+   "Medic": 0.0188,
+   "Rotator": 0.0011,
+   "Flex": -0.0537,
+   "Wingman": 0.0357,
+   "Slayer": -0.0089,
+   "Apex": 0.0184
+  },
+  "Rotator": {
+   "Passenger": -0.0364,
+   "Survivor": 0.0317,
+   "Medic": 0.0011,
+   "Rotator": -0.0088,
+   "Flex": -0.0114,
+   "Wingman": 0.0272,
+   "Slayer": 0.0361,
+   "Apex": -0.0012
+  },
+  "Flex": {
+   "Passenger": 0.0329,
+   "Survivor": 0.1165,
+   "Medic": -0.0537,
+   "Rotator": -0.0114,
+   "Flex": -0.0357,
+   "Wingman": -0.0926,
+   "Slayer": -0.0242,
+   "Apex": -0.0473
+  },
+  "Wingman": {
+   "Passenger": 0.0247,
+   "Survivor": -0.0053,
+   "Medic": 0.0357,
+   "Rotator": 0.0272,
+   "Flex": -0.0926,
+   "Wingman": -0.0086,
+   "Slayer": -0.0537,
+   "Apex": -0.0041
+  },
+  "Slayer": {
+   "Passenger": -0.0199,
+   "Survivor": -0.0423,
+   "Medic": -0.0089,
+   "Rotator": 0.0361,
+   "Flex": -0.0242,
+   "Wingman": -0.0537,
+   "Slayer": 0.0453,
+   "Apex": 0.1114
+  },
+  "Apex": {
+   "Passenger": 0.0094,
+   "Survivor": 0.0421,
+   "Medic": 0.0184,
+   "Rotator": -0.0012,
+   "Flex": -0.0473,
+   "Wingman": -0.0041,
+   "Slayer": 0.1114,
+   "Apex": 0.0171
+  }
+ },
+ "rank1_differs_from_top_killer": 0.39209903938801133,
+ "quadrants": {
+  "Winning fragger": 0.312,
+  "Early ghost": 0.301,
+  "Quiet survivor": 0.266,
+  "Glass cannon": 0.121
+ },
+ "hybrid_share": 0.1994547356760416,
+ "cohesion_corr_place": 0.38797779460821724,
+ "topshare_corr_place": -0.1853660200592556,
+ "gini_corr_place": -0.163278481750872,
+ "coverage_lift": {
+  "Passenger": 0.198,
+  "Survivor": 0.161,
+  "Medic": 0.2,
+  "Rotator": 0.139,
+  "Flex": -0.277,
+  "Wingman": 0.067,
+  "Slayer": 0.128,
+  "Apex": 0.216
+ },
+ "ext": {
+  "Passenger": {
+   "hs_rate": 0.236,
+   "longestKill": 12.71,
+   "weaponsAcquired": 3.653,
+   "dmg_per_kill": 115.989,
+   "killStreaks": 0.334,
+   "swimDistance": 5.43,
+   "vehicleDestroys": 0.008,
+   "roadKills": 0.002,
+   "teamKills": 0.025
+  },
+  "Survivor": {
+   "hs_rate": 0.219,
+   "longestKill": 13.441,
+   "weaponsAcquired": 4.557,
+   "dmg_per_kill": 117.538,
+   "killStreaks": 0.252,
+   "swimDistance": 6.557,
+   "vehicleDestroys": 0.01,
+   "roadKills": 0.001,
+   "teamKills": 0.024
+  },
+  "Medic": {
+   "hs_rate": 0.23,
+   "longestKill": 43.993,
+   "weaponsAcquired": 4.745,
+   "dmg_per_kill": 126.692,
+   "killStreaks": 0.922,
+   "swimDistance": 6.438,
+   "vehicleDestroys": 0.017,
+   "roadKills": 0.004,
+   "teamKills": 0.035
+  },
+  "Rotator": {
+   "hs_rate": 0.238,
+   "longestKill": 29.93,
+   "weaponsAcquired": 4.866,
+   "dmg_per_kill": 132.875,
+   "killStreaks": 0.546,
+   "swimDistance": 10.372,
+   "vehicleDestroys": 0.021,
+   "roadKills": 0.004,
+   "teamKills": 0.053
+  },
+  "Flex": {
+   "hs_rate": 0.242,
+   "longestKill": 13.502,
+   "weaponsAcquired": 3.456,
+   "dmg_per_kill": 126.655,
+   "killStreaks": 0.326,
+   "swimDistance": 3.784,
+   "vehicleDestroys": 0.006,
+   "roadKills": 0.001,
+   "teamKills": 0.022
+  },
+  "Wingman": {
+   "hs_rate": 0.238,
+   "longestKill": 28.589,
+   "weaponsAcquired": 4.467,
+   "dmg_per_kill": 162.364,
+   "killStreaks": 0.569,
+   "swimDistance": 6.04,
+   "vehicleDestroys": 0.012,
+   "roadKills": 0.002,
+   "teamKills": 0.028
+  },
+  "Slayer": {
+   "hs_rate": 0.238,
+   "longestKill": 62.716,
+   "weaponsAcquired": 4.572,
+   "dmg_per_kill": 125.188,
+   "killStreaks": 1.315,
+   "swimDistance": 5.833,
+   "vehicleDestroys": 0.017,
+   "roadKills": 0.006,
+   "teamKills": 0.039
+  },
+  "Apex": {
+   "hs_rate": 0.243,
+   "longestKill": 81.358,
+   "weaponsAcquired": 5.2,
+   "dmg_per_kill": 128.252,
+   "killStreaks": 1.591,
+   "swimDistance": 9.166,
+   "vehicleDestroys": 0.026,
+   "roadKills": 0.013,
+   "teamKills": 0.038
+  }
+ }
+}

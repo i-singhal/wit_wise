@@ -41,8 +41,12 @@ CAP = 0.15; imp = (1 + CAP * np.tanh(z)).round(3)                      # shrink:
 print(pd.DataFrame({"coef": coef.round(4), "z": z.round(2), "importance": imp}))
 IMP = imp.values
 GAMMA = 3.0   # contrast: >1 widens gaps between strong and weak performers; exposed as a slider in the dashboard
-df["raw"] = (mem * S * IMP).sum(1) ** GAMMA
-df["raw_noimp"] = df.perf ** GAMMA
+BETA = 0.4    # weight of the absolute-contribution lens (see D3.10); exposed as a slider
+qq = lambda f: df[f"q_{f}"]
+df["abs"] = .45 * (.5*qq("damageDealt") + .3*qq("DBNOs") + .2*qq("kills")) + .35 * (.5*qq("revives") + .35*qq("assists") + .15*qq("heals")) + .20 * (.6*qq("walkDistance") + .4*qq("rideDistance"))
+style = (mem * S * IMP).sum(1)
+df["raw"] = ((1 - BETA) * style + BETA * df["abs"]) ** GAMMA
+df["raw_noimp"] = ((1 - BETA) * df.perf + BETA * df["abs"]) ** GAMMA
 for c, name in (("raw", "pts"), ("raw_noimp", "pts_noimp")):
     df[name] = 100 * df[c] / df.groupby("team")[c].transform("sum")
 
@@ -96,7 +100,7 @@ plt.xticks(x, [f"{r}\nK{int(k)} R{int(rv)} A{int(a)}" for r, k, rv, a in zip(g.r
 # 08 gamma sensitivity
 gs = [1, 2, 3, 4, 5]; r_ = []
 base = (Bd4[M].values * S[Bd4.index] * IMP).sum(1) if False else None
-bs = Bd4.copy(); bs["lin"] = (bs[M].values * np.column_stack([bs[f"s{i}"] for i in range(K)]) * IMP).sum(1)
+bs = Bd4.copy(); bs["lin"] = (1 - BETA) * (bs[M].values * np.column_stack([bs[f"s{i}"] for i in range(K)]) * IMP).sum(1) + BETA * bs["abs"]
 for gm in gs:
     pp = 100 * bs.lin ** gm / (bs.lin ** gm).groupby(bs.team).transform("sum")
     r_.append(dict(gamma=gm, top_share=float(pp.groupby(bs.team).max().mean()), zero_kill_mean=float(pp[bs.kills == 0].mean()), passenger_mean=float(pp[bs.role_name == "Passenger"].mean()), apex_mean=float(pp[bs.role_name == "Apex"].mean())))
